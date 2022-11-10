@@ -32,6 +32,8 @@ from monkey_island.cc.resources.auth import Authenticate, Register, Registration
 from monkey_island.cc.resources.exploitations.monkey_exploitation import MonkeyExploitation
 from monkey_island.cc.resources.island_mode import IslandMode
 from monkey_island.cc.resources.local_run import LocalRun
+from monkey_island.cc.resources.manifests import Manifests
+from monkey_island.cc.resources.plugins import Plugins
 from monkey_island.cc.resources.ransomware_report import RansomwareReport
 from monkey_island.cc.resources.root import Root
 from monkey_island.cc.resources.security_report import SecurityReport
@@ -169,6 +171,8 @@ def init_restful_endpoints(api: FlaskDIWrapper):
     api.add_resource(Version)
 
     api.add_resource(Nodes)
+    api.add_resource(Plugins)
+    api.add_resource(Manifests)
 
     api.add_resource(ReportGenerationStatus)
 

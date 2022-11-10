@@ -2,6 +2,42 @@ import {defaultCredentials} from '../../services/configuration/propagation/crede
 import {PlaintextType, SecretType} from '../utils/CredentialTitle.tsx';
 import _ from 'lodash';
 
+
+export function addExploiterPluginsToSchema(schema, configs, manifests){
+  schema['properties']['propagation']['properties']['exploitation']['properties']['brute_force']['items']['pluginDefs'] = getExploiterPluginDefinitions(configs);
+  schema['properties']['propagation']['properties']['exploitation']['properties']['brute_force']['items']['anyOf'] = getExploiterSchema(manifests);
+  return schema;
+}
+
+function getExploiterSchema(manifests) {
+  // At the moment we don't have exploiters with nested options.
+  // Once we need those, we should put them in a separate sections and show/hide those sections
+  // based on the selected plugin. BUT it would require a bigger refactoring of UI and plugin
+  // selectors, so postpone it for now.
+
+  let exploiters = [];
+  for (const [key, value] of Object.entries(manifests)) {
+    exploiters.push({
+            'type': 'string',
+            'enum': [key],
+            'title': value['title'],
+            'safe': value['is_safe'],
+            'info': value['description'],
+            'link': value['link_to_docs']
+        });
+  }
+  return exploiters;
+}
+
+function getExploiterPluginDefinitions(configs){
+  let definitions = {};
+  for (const [key, value] of Object.entries(configs)) {
+    definitions[key] = {'name': key, 'options': value}
+  }
+  return definitions
+}
+
+
 export function reformatConfig(config, reverse = false) {
   let formattedConfig = _.clone(config);
 

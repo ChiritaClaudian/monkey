@@ -31,6 +31,7 @@ function AdvancedMultiSelectHeader(props) {
 
 class AdvancedMultiSelect extends React.Component {
   constructor(props) {
+    console.log(props)
     super(props);
     let allPluginNames = this.props.options.enumOptions.map(v => v.value);
 
@@ -126,7 +127,6 @@ class AdvancedMultiSelect extends React.Component {
   }
 
   onResetClick = () => {
-    this.setPaneInfoToSafe();
   }
 
   getHideResetState(selectValues) {
@@ -138,8 +138,9 @@ class AdvancedMultiSelect extends React.Component {
   }
 
   isSafe = (itemKey) => {
-    let fullDef = getFullDefinitionByKey(this.props.schema.items, itemKey);
-    return fullDef.safe;
+    // Defaults shouldn't be decided on the UI. Exploiter could be safe but slow,
+    // so disabled by default
+    return true;
   }
 
   setPaneInfo = (itemKey) => {

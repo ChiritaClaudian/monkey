@@ -21,8 +21,10 @@ import {SCHEMA} from '../../services/configuration/configSchema.js';
 import {
   reformatConfig,
   formatCredentialsForForm,
-  formatCredentialsForIsland
+  formatCredentialsForIsland, addExploiterPluginsToSchema
 } from '../configuration-components/ReformatHook';
+import islandHttpClient, {APIEndpoint} from '../IslandHttpClient';
+import _ from 'lodash';
 
 const CONFIG_URL = '/api/agent-configuration';
 const RESET_URL = '/api/reset-agent-configuration';
@@ -50,7 +52,11 @@ class ConfigurePageComponent extends AuthComponent {
       selectedSection: this.currentSection,
       showUnsafeOptionsConfirmation: false,
       showConfigExportModal: false,
-      showConfigImportModal: false
+      showConfigImportModal: false,
+      // in progress
+      manifests: {},
+      exploiterConfigs: {},
+      pluginsInjected: false,
     };
   }
 
@@ -58,6 +64,20 @@ class ConfigurePageComponent extends AuthComponent {
     if (!this.getSectionsOrder().includes(this.currentSection)) {
       this.currentSection = this.getSectionsOrder()[0]
       this.setState({selectedSection: this.currentSection})
+    }
+
+    // Dirty hacks for injecting plugins into schema
+    // We could create a full-fledged schema in the back end and convert it instead,
+    // but that would require more work.
+    // Also, schema and config should be merged by plugin type, so more additional
+    // infra is needed
+    if ( ! _.isEmpty(this.state.manifests) &&
+      ! _.isEmpty(this.state.exploiterConfigs) &&
+      ! _.isEmpty(this.state.schema) && ! this.state.pluginsInjected){
+      this.setState({pluginsInjected: true})
+      let changedSchema = addExploiterPluginsToSchema(this.state.schema,
+        this.state.exploiterConfigs, this.state.manifests)
+      this.setState({schema: changedSchema});
     }
   }
 
@@ -77,11 +97,18 @@ class ConfigurePageComponent extends AuthComponent {
   }
 
   componentDidMount = () => {
+    islandHttpClient.get(APIEndpoint.exploiterManifests)
+      .then(manifests => this.setState({manifests: manifests.body}))
+
+    islandHttpClient.get(APIEndpoint.exploiterConfigs)
+      .then(configs => this.setState({exploiterConfigs: configs.body}))
+
     this.authFetch(CONFIG_URL).then(res => res.json())
       .then(monkeyConfig => {
         let sections = [];
         monkeyConfig = reformatConfig(monkeyConfig);
 
+        // TODO merge plugin configs into config here.
         this.setInitialConfig(monkeyConfig);
         for (let sectionKey of this.getSectionsOrder()) {
           sections.push({
@@ -305,6 +332,7 @@ class ConfigurePageComponent extends AuthComponent {
   }
 
   renderConfigContent = (displayedSchema) => {
+    console.log(this.state)
     let formProperties = {};
     formProperties['schema'] = displayedSchema
     formProperties['uiSchema'] = UiSchema({

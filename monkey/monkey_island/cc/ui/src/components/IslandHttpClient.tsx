@@ -18,7 +18,10 @@ export enum APIEndpoint {
   agentEvents = '/api/agent-events',
   mode = '/api/island/mode',
   monkey_exploitation = '/api/exploitations/monkey',
-  stolenCredentials = '/api/propagation-credentials/stolen-credentials'
+  stolenCredentials = '/api/propagation-credentials/stolen-credentials',
+  // in progress
+  exploiterManifests = '/api/plugin/manifests/exploiters',
+  exploiterConfigs = '/api/plugin/configs/exploiters',
 }
 
 class IslandHttpClient extends AuthComponent {

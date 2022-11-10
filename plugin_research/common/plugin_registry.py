@@ -1,0 +1,3 @@
+def register_plugin(manifest, config, entrypoint):
+    # So far it's not important how the plugin will be registered, it's just for completion sake
+    ...

@@ -28,6 +28,7 @@ import IslandHttpClient, { APIEndpoint } from "./IslandHttpClient";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFileCode, faLightbulb} from "@fortawesome/free-solid-svg-icons";
 import { doesAnyAgentExist, didAllAgentsShutdown } from './utils/ServerUtils';
+import ProtoConfigPage from './plugin-prototype/proto-page';
 
 let notificationIcon = require('../images/notification-logo-512x512.png');
 
@@ -247,7 +248,7 @@ class AppComponent extends AuthComponent {
               <SidebarLayoutComponent component={GettingStartedPage} {...defaultSideNavProps}/>,
               true)}
             {this.renderRoute(Routes.ConfigurePage,
-              <SidebarLayoutComponent component={ConfigurePage} {...defaultSideNavProps}/>)}
+              <SidebarLayoutComponent component={ProtoConfigPage} {...defaultSideNavProps}/>)}
             {this.renderRoute(Routes.RunMonkeyPage,
               <SidebarLayoutComponent component={RunMonkeyPage} {...defaultSideNavProps}/>)}
             {this.renderRoute(Routes.MapPage,

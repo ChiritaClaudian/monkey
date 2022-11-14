@@ -18,8 +18,10 @@ const protoConfig = {
     'link': 'www.pork-face.com',
     'plugin_options': {
       'timeout': 2000,
-      'rdp_versions': '1, 2'
-    }
+      'rdp_versions': []
+    },
+    'mode': 'silent',
+    'scan_period': 10
   }
 }
 

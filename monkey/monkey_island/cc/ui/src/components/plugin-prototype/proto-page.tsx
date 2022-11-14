@@ -6,12 +6,15 @@ import _ from 'lodash';
 
 // This might be a good opportunity to move back to the official repo
 import Form from 'react-jsonschema-form-bs4';
-import ProtoUISchema from './proto-ui-schema';
+import getUISchema from './proto-ui-schema';
 import {formValidationFormats} from '../configuration-components/ValidationFormats';
+import ProtoSelector from './proto-selector';
+
 
 function ProtoConfigPage() {
 
   const [formData, setFormData] = useState(protoConfig);
+  const [selectedPlugin, setSelectedPlugin] = useState(null);
 
   function updateFormData(newFormData){
     if(! _.isEqual(formData, newFormData.formData)){
@@ -21,7 +24,7 @@ function ProtoConfigPage() {
 
   let formProperties = {};
   formProperties['schema'] = protoSchema;
-  formProperties['uiSchema'] = ProtoUISchema;
+  formProperties['uiSchema'] = getUISchema(selectedPlugin, protoSchema.properties);
   formProperties['onChange'] = updateFormData;
   formProperties['transformErrors'] = transformErrors;
   // Nothing new, we already have these
@@ -31,6 +34,7 @@ function ProtoConfigPage() {
 
   return (
     <div style={{marginLeft: "25%"}}>
+      <ProtoSelector plugins={protoSchema.properties} onClick={setSelectedPlugin} />
       <Form {...formProperties}></Form>
     </div>
   )

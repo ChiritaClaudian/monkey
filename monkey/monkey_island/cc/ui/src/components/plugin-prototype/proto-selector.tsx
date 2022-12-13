@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Dropdown} from 'react-bootstrap';
 
 
 const ProtoSelector = (props) => {
   let selectOptions = [];
-  for (const [pluginName, pluginVal] of Object.entries(props.plugins)) {
+  for (const [name, plugin] of Object.entries(props.plugins)) {
     selectOptions.push(
-      <Dropdown.Item onClick={() => props.onClick(pluginName)}
-                     eventKey="{pluginVal.title}">{pluginVal.title}</Dropdown.Item>)
-  }
+      <Dropdown.Item onClick={() => props.onClick(name)}
+                     eventKey={`plugin['title']`}>
+                     {plugin['title']}</Dropdown.Item>
+  )}
 
   return (
     <Dropdown>
